@@ -2,11 +2,13 @@
 
 import os
 import sys
+import platform
 if sys.version_info[0] < 3:
     import ConfigParser as configparser
 else:
     import configparser
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 from random import shuffle, randrange
 
@@ -91,36 +93,63 @@ def main():
                     if number < len(factions):
                         factions[number].chosen = tk.BooleanVar()
                         factions[number].chosen.set(False)
-                        tk.Checkbutton(factionFrame,
-                                       text     = factions[number].name,
-                                       variable = factions[number].chosen,
-                                       onvalue  = True,
-                                       offvalue = False,
-                                       ).grid(row=i, column=j, sticky=tk.W)
+                        if platform.system() == 'Darwin':
+                            ttk.Checkbutton(factionFrame,
+                                           text     = factions[number].name,
+                                           variable = factions[number].chosen,
+                                           onvalue  = True,
+                                           offvalue = False,
+                                           ).grid(row=i, column=j, sticky=tk.W)
+                        else:
+                            tk.Checkbutton(factionFrame,
+                                           text     = factions[number].name,
+                                           variable = factions[number].chosen,
+                                           onvalue  = True,
+                                           offvalue = False,
+                                           ).grid(row=i, column=j, sticky=tk.W)
                     number += 1
 
             #Let the user select an amount of factions for the program to randomly select
             self.rannum = tk.IntVar(); self.rannum.set(0)
             randomFrame = tk.Frame(frame, padx=10, pady=10)
             randomFrame.grid(row=1, column=0, sticky=tk.W)
-            tk.Spinbox(randomFrame, from_=0, to=17, textvariable=self.rannum, width=2).grid(row=0, column=0)
-            tk.Label(randomFrame, text="factions").grid(row=0, column=1)
-            tk.Button(randomFrame, text = "Randomize", command = self.randomize).grid(row=0, column=2)
+            if platform.system() == 'Darwin':
+                ttk.Spinbox(randomFrame, from_=0, to=17, textvariable=self.rannum, width=2).grid(row=0, column=0)
+                ttk.Label(randomFrame, text="factions").grid(row=0, column=1)
+                ttk.Button(randomFrame, text = "Randomize", command = self.randomize).grid(row=0, column=2)
+            else:
+                tk.Spinbox(randomFrame, from_=0, to=17, textvariable=self.rannum, width=2).grid(row=0, column=0)
+                tk.Label(randomFrame, text="factions").grid(row=0, column=1)
+                tk.Button(randomFrame, text = "Randomize", command = self.randomize).grid(row=0, column=2)
 
             #This button opens the color scores window
-            tk.Button(frame, text = "Set scores", command = self.scoring).grid(row=1, column=1)
+            if platform.system() == 'Darwin':
+                ttk.Button(frame, text = "Set scores", command = self.scoring).grid(row=1, column=1)
+            else:
+                tk.Button(frame, text = "Set scores", command = self.scoring).grid(row=1, column=1)
 
             #Let the user choose whether or not the program should randomly designate a speaker
             self.speaker = tk.BooleanVar(); self.speaker.set(True)
-            tk.Checkbutton(frame,
-                           text     = "Assign speaker",
-                           variable = self.speaker,
-                           onvalue  = True,
-                           offvalue = False,
-                           ).grid(row=1, column=2)
+            if platform.system() == 'Darwin':
+                ttk.Checkbutton(frame,
+                               text     = "Assign speaker",
+                               variable = self.speaker,
+                               onvalue  = True,
+                               offvalue = False,
+                               ).grid(row=1, column=2)
+            else:
+                tk.Checkbutton(frame,
+                               text     = "Assign speaker",
+                               variable = self.speaker,
+                               onvalue  = True,
+                               offvalue = False,
+                               ).grid(row=1, column=2)
 
             #This button assigns the colors
-            tk.Button(frame, text = "Assign colors", command = self.assign).grid(row=1, column=3)
+            if platform.system() == 'Darwin':
+                ttk.Button(frame, text = "Assign colors", command = self.assign).grid(row=1, column=3)
+            else:
+                tk.Button(frame, text = "Assign colors", command = self.assign).grid(row=1, column=3)
 
         def createWindow(self):
             #Creates a window displaying the selected factions and their assigned colors. Also displays the speaker, if desired.
@@ -154,21 +183,35 @@ def main():
                 scoringFrame = tk.Frame(self.scoringWindow, padx=10, pady=10)
                 scoringFrame.pack(fill=tk.BOTH)
                 for c in range(6):
-                    tk.Label(scoringFrame, text=colors[c]).grid(row=0, column=c+1)
+                    if platform.system() == 'Darwin':
+                        ttk.Label(scoringFrame, text=colors[c]).grid(row=0, column=c+1)
+                    else:
+                        tk.Label(scoringFrame, text=colors[c]).grid(row=0, column=c+1)
                     scoringFrame.columnconfigure(c+1, weight=1, uniform='score')
                 for f in range(17):
-                    tk.Label(scoringFrame, text=factions[f].name).grid(row=f+1, column=0, sticky=tk.W)
+                    if platform.system() == 'Darwin':
+                        ttk.Label(scoringFrame, text=factions[f].name).grid(row=f+1, column=0, sticky=tk.W)
+                    else:
+                        tk.Label(scoringFrame, text=factions[f].name).grid(row=f+1, column=0, sticky=tk.W)
                     scoringFrame.rowconfigure(f+1, pad=5)
                     for s in range(6):
-                        tk.Entry(scoringFrame, textvariable=factions[f].scores[colors[s]], width=2).grid(row=f+1, column=s+1)
+                        if platform.system() == 'Darwin':
+                            ttk.Entry(scoringFrame, textvariable=factions[f].scores[colors[s]], width=2).grid(row=f+1, column=s+1)
+                        else:
+                            tk.Entry(scoringFrame, textvariable=factions[f].scores[colors[s]], width=2).grid(row=f+1, column=s+1)
                 buttonFrame = tk.Frame(self.scoringWindow, padx=10, pady=10)
                 buttonFrame.pack(fill=tk.BOTH)
                 buttonFrame.columnconfigure(0, weight=1, uniform='button')
                 buttonFrame.columnconfigure(1, weight=1, uniform='button')
                 buttonFrame.columnconfigure(2, weight=1, uniform='button')
-                tk.Button(buttonFrame, text = "Load default", command = self.defaultscores).grid(row=0, column=0)
-                tk.Button(buttonFrame, text = "Load custom", command = self.loadcustom).grid(row=0, column=1)
-                tk.Button(buttonFrame, text = "Save", command = self.setscores).grid(row=0, column=2)
+                if platform.system() == 'Darwin':
+                    ttk.Button(buttonFrame, text = "Load default", command = self.defaultscores).grid(row=0, column=0)
+                    ttk.Button(buttonFrame, text = "Load custom", command = self.loadcustom).grid(row=0, column=1)
+                    ttk.Button(buttonFrame, text = "Save", command = self.setscores).grid(row=0, column=2)
+                else:
+                    tk.Button(buttonFrame, text = "Load default", command = self.defaultscores).grid(row=0, column=0)
+                    tk.Button(buttonFrame, text = "Load custom", command = self.loadcustom).grid(row=0, column=1)
+                    tk.Button(buttonFrame, text = "Save", command = self.setscores).grid(row=0, column=2)
             elif self.scoringWindow.state() != tk.NORMAL:
                 self.scoringWindow.deiconify()
 
